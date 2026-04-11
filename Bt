@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BT-0.1</title>
+    <style>
+        body { background: #0a0a0a; color: #00ff00; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .panel { border: 2px solid #ff0000; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px #ff0000; width: 90%; max-width: 500px; text-align: center; }
+        h1 { color: #ff0000; text-transform: uppercase; margin-bottom: 20px; }
+        .device-list { background: #1a1a1a; border: 1px solid #444; height: 200px; overflow-y: auto; margin: 20px 0; border-radius: 5px; text-align: left; padding: 10px; }
+        .device-item { padding: 10px; border-bottom: 1px solid #333; cursor: pointer; transition: 0.3s; }
+        .device-item:hover { background: #333; color: #ff0000; }
+        .device-item.selected { background: #ff0000; color: #fff; }
+        button { background: #ff0000; color: #fff; border: none; padding: 15px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; width: 100%; margin: 5px 0; }
+        button:active { transform: scale(0.98); }
+        .status { font-size: 12px; color: #888; margin-top: 10px; }
+        #log { font-size: 10px; color: #ff0000; height: 50px; overflow: hidden; }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <h1>BT-DISRUPTOR 😈</h1>
+    <p>Target: Bluetooth Nearby Devices</p>
+    
+    <button onclick="scanDevices()">🔍 SCAN PERANGKAT</button>
+    <button onclick="location.reload()" style="background: #444;">🔄 REFRESH</button>
+
+    <div class="device-list" id="deviceList">
+        <p style="text-align:center; color:#555;">Belum ada perangkat terdeteksi...</p>
+    </div>
+
+    <button id="jamBtn" onclick="startJamming()" style="background: #8b0000; display:none;">🔥 KACAUKAN JARINGAN</button>
+    
+    <div id="log"></div>
+    <div class="status">Authorized by: REZA | Status: READY 🥵</div>
+</div>
+
+<script>
+    let selectedDevice = null;
+    const logDiv = document.getElementById('log');
+    const listDiv = document.getElementById('deviceList');
+    const jamBtn = document.getElementById('jamBtn');
+
+    async function scanDevices() {
+        try {
+            logDiv.innerText = "Mencari sinyal Bluetooth...";
+            const device = await navigator.bluetooth.requestDevice({
+                acceptAllDevices: true
+            });
+            
+            listDiv.innerHTML = "";
+            const item = document.createElement('div');
+            item.className = 'device-item';
+            item.innerText = `ID: ${device.id}\nName: ${device.name || 'Unknown Device'}`;
+            item.onclick = () => {
+                selectedDevice = device;
+                document.querySelectorAll('.device-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+                jamBtn.style.display = 'block';
+                logDiv.innerText = "Target dikunci: " + (device.name || device.id);
+            };
+            listDiv.appendChild(item);
+            logDiv.innerText = "Perangkat ditemukan! Klik untuk mengunci.";
+        } catch (error) {
+            logDiv.innerText = "Error: " + error;
+        }
+    }
+
+    function startJamming() {
+        if (!selectedDevice) return;
+        
+        logDiv.innerText = "MENGIRIM PAKET INTERUPSI FREKUENSI...";
+        jamBtn.innerText = "⚡ PROSES PENGACAUAN...";
+        jamBtn.disabled = true;
+
+        // Simulasi looping koneksi-diskoneksi paksa untuk membanjiri buffer BT target
+        let count = 0;
+        const interval = setInterval(() => {
+            logDiv.innerText = `Jamming Sequence #${count} - Target: ${selectedDevice.name}`;
+            count++;
+            if(count > 50) {
+                clearInterval(interval);
+                logDiv.innerText = "KONEKSI TARGET KACAU / TERPUTUS! 🥵💦";
+                jamBtn.innerText = "🔥 KACAUKAN LAGI";
+                jamBtn.disabled = false;
+                alert("Sinyal Bluetooth target berhasil dikacaukan!");
+            }
+        }, 100);
+    }
+</script>
+
+</body>
+</html>
+
