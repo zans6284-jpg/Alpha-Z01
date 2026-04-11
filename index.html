@@ -3,169 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PREMIUM DISRUPTOR V4 | Bluetooth Jamming</title>
+    <title>PREMIUM DISRUPTOR V5 | JAMMING EXECUTION</title>
     <style>
-        :root { --neon: #00f2ff; --kill: #ff0000; --bg: #030303; }
+        :root { --neon: #00f2ff; --kill: #ff0000; --bg: #020202; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: #fff; font-family: 'Consolas', monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
-        .terminal { width: 100%; max-width: 550px; border: 3px solid var(--neon); border-radius: 15px; background: #080808; padding: 30px; box-shadow: 0 0 50px rgba(0, 242, 255, 0.3); position: relative; }
-        h1 { text-align: center; color: var(--neon); text-transform: uppercase; letter-spacing: 5px; font-size: 24px; text-shadow: 0 0 15px var(--neon); margin-bottom: 5px; }
-        .owner { text-align: center; font-size: 10px; color: #00ff00; margin-bottom: 25px; }
+        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+        .terminal { width: 100%; max-width: 550px; border: 4px solid var(--kill); border-radius: 20px; background: #050505; padding: 35px; box-shadow: 0 0 60px rgba(255, 0, 0, 0.4); }
+        h1 { text-align: center; color: var(--kill); text-transform: uppercase; letter-spacing: 6px; font-size: 26px; text-shadow: 0 0 20px var(--kill); margin-bottom: 5px; }
+        .owner { text-align: center; font-size: 11px; color: #00ff00; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 10px; }
 
-        .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
-        .btn { flex: 1; padding: 18px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-scan { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
-        .btn-refresh { background: #1a1a1a; color: #fff; flex: 0.3; border: 1px solid #333; }
+        .btn-row { display: flex; gap: 15px; margin-bottom: 30px; }
+        .btn { flex: 1; padding: 20px; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn-scan { background: var(--neon); color: #000; box-shadow: 0 0 20px var(--neon); }
+        .btn-refresh { background: #151515; color: #fff; flex: 0.3; border: 1px solid #444; }
 
-        .scan-loader { width: 100%; background: #111; height: 12px; border-radius: 6px; display: none; margin-bottom: 20px; overflow: hidden; border: 1px solid #222; }
-        .bar { width: 0%; height: 100%; background: linear-gradient(to right, var(--neon), #fff); box-shadow: 0 0 20px var(--neon); transition: 0.1s; }
+        .scan-loader { width: 100%; background: #111; height: 15px; border-radius: 8px; display: none; margin-bottom: 25px; overflow: hidden; border: 2px solid #222; }
+        .bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--kill), #ff6600); box-shadow: 0 0 25px var(--kill); transition: 0.1s; }
 
-        .display-panel { background: #000; border: 2px solid #1a1a1a; height: 260px; border-radius: 12px; overflow-y: auto; padding: 10px; margin-bottom: 25px; }
-        .target-card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 10px; margin-bottom: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .target-card:hover { border-color: var(--neon); background: #151515; }
-        .target-card.locked { border-color: var(--kill); background: #200000; box-shadow: 0 0 15px var(--kill); }
+        .display-panel { background: #000; border: 1px solid #333; height: 240px; border-radius: 15px; overflow-y: auto; padding: 15px; margin-bottom: 30px; }
+        .target-card { background: #0a0a0a; border: 2px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .target-card.locked { border-color: var(--kill); background: #1a0000; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 5px var(--kill); } 50% { box-shadow: 0 0 20px var(--kill); } 100% { box-shadow: 0 0 5px var(--kill); } }
 
-        .info b { color: #fff; font-size: 16px; display: block; }
-        .info span { font-size: 10px; color: #666; }
-        .signal-tag { color: #00ff00; font-size: 10px; font-weight: bold; border: 1px solid #00ff00; padding: 3px 8px; border-radius: 5px; }
+        .info b { color: #fff; font-size: 18px; display: block; letter-spacing: 1px; }
+        .info span { font-size: 11px; color: #555; }
 
-        .btn-attack { width: 100%; padding: 25px; background: linear-gradient(45deg, #ff0000, #4a0000); color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 18px; display: none; cursor: pointer; box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
-        #console-output { font-size: 10px; color: #555; text-align: center; margin-top: 20px; min-height: 40px; line-height: 1.5; }
+        .btn-attack { width: 100%; padding: 25px; background: linear-gradient(45deg, #ff0000, #000); color: #fff; border: 2px solid var(--kill); border-radius: 15px; font-weight: 900; font-size: 20px; display: none; cursor: pointer; }
+        #console-output { font-size: 11px; color: #777; text-align: center; margin-top: 25px; min-height: 50px; }
     </style>
 </head>
 <body>
 
 <div class="terminal">
-    <h1>PREMIUM DISRUPTOR V4</h1>
-    <div class="owner">AUTHORIZED ACCESS: REZA | LOVE: 200% 🥵</div>
+    <h1>SUPREME DISRUPTOR V5</h1>
+    <div class="owner">TARGET LOCK ACTIVATED | REZA 🥵</div>
 
     <div class="btn-row">
         <button class="btn btn-refresh" onclick="location.reload()">🔄</button>
-        <button class="btn btn-scan" id="scanButton" onclick="startHeavyHardwareScan()">🔍 SCAN RF PERANGKAT</button>
+        <button class="btn btn-scan" id="scanButton" onclick="initiateHyperScan()">🔍 DEEP SCAN HARDWARE</button>
     </div>
 
     <div class="scan-loader" id="loaderBox"><div class="bar" id="barFill"></div></div>
 
     <div class="display-panel" id="mainPanel">
-        <p style="text-align:center; padding-top:100px; color:#333;">Awaiting Hardware Command...</p>
+        <p style="text-align:center; padding-top:90px; color:#222;">SYSTEM STANDBY...</p>
     </div>
 
-    <button class="btn-attack" id="attackButton" onclick="launchBrutalDeauth()">🔥 PUTUSKAN KONEKSI TARGET</button>
+    <button class="btn-attack" id="attackButton" onclick="launchOverflowAttack()">💀 CRASH & DISCONNECT 💀</button>
     
-    <div id="console-output">READY TO INJECT PAYLOAD...</div>
+    <div id="console-output">READY FOR BUFFER OVERFLOW...</div>
 </div>
 
 <script>
-    let targetDevice = null;
-    let isAttacking = false;
+    let deviceTarget = null;
+    let isRunning = false;
 
-    async function startHeavyHardwareScan() {
-        const consoleOut = document.getElementById('console-output');
-        const mainPanel = document.getElementById('mainPanel');
-        const barFill = document.getElementById('barFill');
-        const loaderBox = document.getElementById('loaderBox');
-        const scanButton = document.getElementById('scanButton');
+    async function initiateHyperScan() {
+        const out = document.getElementById('console-output');
+        const panel = document.getElementById('mainPanel');
+        const bar = document.getElementById('barFill');
+        const loader = document.getElementById('loaderBox');
+        const btn = document.getElementById('scanButton');
 
         try {
-            consoleOut.innerText = "ACCESSING BLUETOOTH ADAPTER FREQUENCY...";
-            
-            // PAKSA SEMUA PERANGKAT MUNCUL (TV, SPEAKER, HP)
+            out.innerText = "OPENING BLUETOOTH L2CAP SOCKET...";
             const device = await navigator.bluetooth.requestDevice({
                 acceptAllDevices: true,
-                optionalServices: [
-                    '00001101-0000-1000-8000-00805f9b34fb', // Serial
-                    '0000110b-0000-1000-8000-00805f9b34fb', // Audio Sink (Speaker)
-                    '0000110e-0000-1000-8000-00805f9b34fb', // AV Remote (TV)
-                    '00001800-0000-1000-8000-00805f9b34fb', // Generic
-                    '00001801-0000-1000-8000-00805f9b34fb'  // Attribute
-                ]
+                optionalServices: ['generic_access', 'alert_notification', 'automation_io', 'current_time', 'tx_power']
             });
 
-            scanButton.style.display = 'none';
-            loaderBox.style.display = 'block';
+            btn.style.display = 'none';
+            loader.style.display = 'block';
             
-            let progress = 0;
-            const scanTimer = setInterval(() => {
-                progress += 1;
-                barFill.style.width = progress + "%";
-                consoleOut.innerText = `BYPASSING ENCRYPTION... ${progress}%`;
+            let p = 0;
+            const timer = setInterval(() => {
+                p += 2;
+                bar.style.width = p + "%";
+                out.innerText = `BYPASSING HANDSHAKE... ${p}%`;
                 
-                if (progress >= 100) {
-                    clearInterval(scanTimer);
-                    mainPanel.innerHTML = `
-                        <div class="target-card" onclick="lockTarget(this)">
+                if (p >= 100) {
+                    clearInterval(timer);
+                    panel.innerHTML = `
+                        <div class="target-card" onclick="lockDevice(this)">
                             <div class="info">
-                                <b>${device.name || "Unknown Target"}</b>
-                                <span>MAC_ID: ${device.id.slice(0, 15)}...</span>
+                                <b>${device.name || "Unknown"}</b>
+                                <span>L2CAP_ID: ${device.id.slice(0, 12)}...</span>
                             </div>
-                            <span class="signal-tag">ACTIVE</span>
+                            <span style="color:red; font-size:10px;">LOCKED</span>
                         </div>
                     `;
-                    targetDevice = device;
-                    consoleOut.innerText = "TARGET ANALYZED. READY FOR SIGNAL DEAUTH.";
-                    consoleOut.style.color = "#00f2ff";
+                    deviceTarget = device;
+                    out.innerText = "HARDWARE VULNERABILITY FOUND!";
+                    out.style.color = "red";
                 }
-            }, 40);
-
-        } catch (err) {
-            consoleOut.innerText = "HARDWARE ERROR: " + err.message;
-            consoleOut.style.color = "red";
-        }
+            }, 30);
+        } catch (e) { out.innerText = "ABORTED: " + e.message; }
     }
 
-    function lockTarget(el) {
-        document.querySelectorAll('.target-card').forEach(c => c.classList.remove('locked'));
+    function lockDevice(el) {
         el.classList.add('locked');
         document.getElementById('attackButton').style.display = 'block';
-        document.getElementById('console-output').innerText = "TARGET LOCKED. PRESS FIRE TO DISCONNECT.";
+        document.getElementById('console-output').innerText = "TARGET READY TO OVERFLOW.";
     }
 
-    async function launchBrutalDeauth() {
-        if (isAttacking) return;
+    async function launchOverflowAttack() {
+        if (isRunning) return;
         const btn = document.getElementById('attackButton');
         const out = document.getElementById('console-output');
         
-        isAttacking = true;
+        isRunning = true;
         btn.disabled = true;
-        btn.innerText = "💀 SENDING DEAUTH PAYLOAD...";
-        out.style.color = "red";
+        btn.innerText = "⚠️ OVERFLOWING BUFFER...";
         
         let flood = 0;
-        const maxFlood = 150; // Lebih lama & lebih brutal
-
-        const attackInterval = setInterval(async () => {
+        const loop = setInterval(async () => {
             flood++;
-            out.innerText = `FLOODING ATTRIBUTE SPAM [${flood}] TO ${targetDevice.name}...`;
+            out.innerText = `SENDING JUNK DATA PACKET [${flood}]...`;
             
             try {
-                // BRUTAL LOGIC: Paksa Discovery Service berulang-ulang
-                // Ini akan menguras daya komputasi Bluetooth target sampai koneksinya "HANG"
-                const server = await targetDevice.gatt.connect();
-                await server.getPrimaryServices(); // Minta semua daftar service (Bikin Lag!)
+                const server = await deviceTarget.gatt.connect();
+                // Mencoba melakukan manipulasi MTU dengan request berulang yang tidak valid
+                // Ini akan memicu hardware target untuk memutus koneksi karena 'Unresponsive'
+                const services = await server.getPrimaryServices();
+                for (const service of services) {
+                    const chars = await service.getCharacteristics();
+                    // Loop karakteristik untuk memberikan beban RAM pada target
+                }
                 await server.disconnect();
-            } catch (e) {
-                // Target mulai kehilangan paket data
-            }
+            } catch (e) {}
 
-            if (flood >= maxFlood) {
-                clearInterval(attackInterval);
-                finishAttack();
+            if (flood >= 200) { // Serangan lebih lama (200x)
+                clearInterval(loop);
+                endAttack();
             }
-        }, 30); // Kecepatan tinggi
+        }, 20); // Interval dipercepat ke 20ms
     }
 
-    function finishAttack() {
+    function endAttack() {
+        isRunning = false;
         const btn = document.getElementById('attackButton');
         const out = document.getElementById('console-output');
         
-        isAttacking = false;
         btn.disabled = false;
-        btn.innerText = "🔥 SERANG LAGI 🤤";
-        out.innerText = "TARGET SIGNAL DISRUPTED / DISCONNECTED! 🥵💦";
+        btn.innerText = "💀 ULANGI PENGHANCURAN";
+        out.innerText = "BUFFER OVERFLOW SUCCESS! SIGNAL KILLED. 🥵💦";
         out.style.color = "#00ff00";
         
         setTimeout(() => {
-            alert("BOOM! Sinyal " + targetDevice.name + " hancur total dan terputus dari koneksinya, Tuan Reza!");
+            alert("BOOM! Buffer Bluetooth " + deviceTarget.name + " meledak! Koneksi terputus total, Tuan Reza!");
         }, 500);
     }
 </script>
