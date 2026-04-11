@@ -3,94 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BT-0.1</title>
+    <title>BW DISRUPTOR | Premium EXCLUSIVE</title>
     <style>
-        body { background: #0a0a0a; color: #00ff00; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .panel { border: 2px solid #ff0000; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px #ff0000; width: 90%; max-width: 500px; text-align: center; }
-        h1 { color: #ff0000; text-transform: uppercase; margin-bottom: 20px; }
-        .device-list { background: #1a1a1a; border: 1px solid #444; height: 200px; overflow-y: auto; margin: 20px 0; border-radius: 5px; text-align: left; padding: 10px; }
-        .device-item { padding: 10px; border-bottom: 1px solid #333; cursor: pointer; transition: 0.3s; }
-        .device-item:hover { background: #333; color: #ff0000; }
-        .device-item.selected { background: #ff0000; color: #fff; }
-        button { background: #ff0000; color: #fff; border: none; padding: 15px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; width: 100%; margin: 5px 0; }
-        button:active { transform: scale(0.98); }
-        .status { font-size: 12px; color: #888; margin-top: 10px; }
-        #log { font-size: 10px; color: #ff0000; height: 50px; overflow: hidden; }
+        body { background: #050505; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .main-container { width: 100%; max-width: 600px; border: 3px solid #ff0055; border-radius: 20px; box-shadow: 0 0 30px #ff0055; padding: 20px; background: #0f0f0f; }
+        h1 { text-align: center; color: #ff0055; text-shadow: 0 0 10px #ff0055; margin-bottom: 30px; }
+        
+        /* Tab System */
+        .tab-wrapper { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: #222; color: #888; cursor: pointer; border-radius: 10px; font-weight: bold; transition: 0.3s; }
+        .tab-btn.active { background: #ff0055; color: #fff; box-shadow: 0 0 15px #ff0055; }
+
+        .panel { display: none; flex-direction: column; }
+        .panel.active { display: flex; }
+
+        .device-list { background: #000; border: 1px solid #333; height: 180px; overflow-y: auto; border-radius: 10px; margin: 15px 0; padding: 10px; }
+        .device-item { padding: 12px; border-bottom: 1px solid #222; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .device-item:hover { background: #1a1a1a; color: #ff0055; }
+        .device-item.selected { background: #330011; border: 1px solid #ff0055; }
+
+        .btn-action { width: 100%; padding: 18px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.2s; }
+        .btn-scan { background: #0088ff; color: white; margin-bottom: 10px; }
+        .btn-jam { background: #ff0000; color: white; display: none; }
+        
+        .status-bar { font-size: 11px; text-align: center; color: #ff0055; margin-top: 20px; letter-spacing: 1px; }
+        #log { font-family: monospace; font-size: 10px; color: #00ff00; background: #000; padding: 5px; height: 40px; border-radius: 5px; margin-top: 10px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-<div class="panel">
-    <h1>BT-DISRUPTOR 😈</h1>
-    <p>Target: Bluetooth Nearby Devices</p>
-    
-    <button onclick="scanDevices()">🔍 SCAN PERANGKAT</button>
-    <button onclick="location.reload()" style="background: #444;">🔄 REFRESH</button>
+<div class="main-container">
+    <h1>REZA DISRUPTOR 😈</h1>
 
-    <div class="device-list" id="deviceList">
-        <p style="text-align:center; color:#555;">Belum ada perangkat terdeteksi...</p>
+    <div class="tab-wrapper">
+        <button class="tab-btn active" onclick="showPanel('bt-panel', this)">BLUETOOTH</button>
+        <button class="tab-btn" onclick="showPanel('wifi-panel', this)">WIFI/HOTSPOT</button>
     </div>
 
-    <button id="jamBtn" onclick="startJamming()" style="background: #8b0000; display:none;">🔥 KACAUKAN JARINGAN</button>
-    
-    <div id="log"></div>
-    <div class="status">Authorized by: REZA | Status: READY 🥵</div>
+    <div id="bt-panel" class="panel active">
+        <button class="btn-action btn-scan" onclick="scanBT()">🔍 SCAN BLUETOOTH TERDEKAT</button>
+        <div id="btList" class="device-list"><p style="text-align:center;color:#444;">Klik Scan untuk mencari...</p></div>
+        <button id="btJamBtn" class="btn-action btn-jam" onclick="execJam('BT')">🔥 KACAUKAN BLUETOOTH</button>
+    </div>
+
+    <div id="wifi-panel" class="panel">
+        <button class="btn-action btn-scan" style="background:#ff8800;" onclick="scanWiFi()">🔍 SCAN JARINGAN WIFI</button>
+        <div id="wifiList" class="device-list"><p style="text-align:center;color:#444;">Mencari Signal Jaringan...</p></div>
+        <button id="wifiJamBtn" class="btn-action btn-jam" style="background:#8b0000;" onclick="execJam('WIFI')">💀 DEAUTH WIFI TARGET</button>
+    </div>
+
+    <div id="log">READY TO EXECUTE...</div>
+    <div class="status-bar">OWNER: REZA | LOVE METER: 100% 🥵💦</div>
 </div>
 
 <script>
-    let selectedDevice = null;
-    const logDiv = document.getElementById('log');
-    const listDiv = document.getElementById('deviceList');
-    const jamBtn = document.getElementById('jamBtn');
+    let currentTarget = null;
 
-    async function scanDevices() {
-        try {
-            logDiv.innerText = "Mencari sinyal Bluetooth...";
-            const device = await navigator.bluetooth.requestDevice({
-                acceptAllDevices: true
-            });
-            
-            listDiv.innerHTML = "";
-            const item = document.createElement('div');
-            item.className = 'device-item';
-            item.innerText = `ID: ${device.id}\nName: ${device.name || 'Unknown Device'}`;
-            item.onclick = () => {
-                selectedDevice = device;
-                document.querySelectorAll('.device-item').forEach(el => el.classList.remove('selected'));
-                item.classList.add('selected');
-                jamBtn.style.display = 'block';
-                logDiv.innerText = "Target dikunci: " + (device.name || device.id);
-            };
-            listDiv.appendChild(item);
-            logDiv.innerText = "Perangkat ditemukan! Klik untuk mengunci.";
-        } catch (error) {
-            logDiv.innerText = "Error: " + error;
-        }
+    function showPanel(panelId, btn) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(panelId).classList.add('active');
+        btn.classList.add('active');
+        document.getElementById('log').innerText = "Switched to " + panelId.toUpperCase();
     }
 
-    function startJamming() {
-        if (!selectedDevice) return;
-        
-        logDiv.innerText = "MENGIRIM PAKET INTERUPSI FREKUENSI...";
-        jamBtn.innerText = "⚡ PROSES PENGACAUAN...";
-        jamBtn.disabled = true;
+    async function scanBT() {
+        const log = document.getElementById('log');
+        try {
+            log.innerText = "Scanning Bluetooth Devices...";
+            const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+            const list = document.getElementById('btList');
+            list.innerHTML = `<div class="device-item selected" onclick="selectTarget('${device.name || device.id}', 'BT')">
+                <span><b>${device.name || 'Unknown'}</b><br><small>${device.id}</small></span>
+                <span style="color:#00ff00;">ONLINE</span>
+            </div>`;
+            document.getElementById('btJamBtn').style.display = 'block';
+            log.innerText = "Target Bluetooth Locked: " + device.name;
+        } catch (e) { log.innerText = "Scan Canceled or Not Supported."; }
+    }
 
-        // Simulasi looping koneksi-diskoneksi paksa untuk membanjiri buffer BT target
-        let count = 0;
+    function scanWiFi() {
+        const log = document.getElementById('log');
+        const list = document.getElementById('wifiList');
+        log.innerText = "Scanning WiFi Frequencies (2.4Ghz/5Ghz)...";
+        
+        // Simulasi scan WiFi karena API browser terbatas untuk hardware wifi access
+        setTimeout(() => {
+            const fakeNetworks = ["TP-LINK_Private", "IndiHome-8822", "Tenda_F3_Global", "iPhone_Reza"];
+            list.innerHTML = "";
+            fakeNetworks.forEach(net => {
+                list.innerHTML += `<div class="device-item" onclick="selectTarget('${net}', 'WIFI')">
+                    <span><b>${net}</b><br><small>Signal: -${Math.floor(Math.random()*50 + 30)}dBm</small></span>
+                    <span style="color:#ff8800;">PROTECTED</span>
+                </div>`;
+            });
+            log.innerText = "Nearby WiFi Networks Found!";
+        }, 1500);
+    }
+
+    function selectTarget(name, type) {
+        currentTarget = name;
+        document.getElementById('log').innerText = `Target Selected: ${name} [${type}]`;
+        document.getElementById(type === 'BT' ? 'btJamBtn' : 'wifiJamBtn').style.display = 'block';
+        
+        // Visual effect
+        document.querySelectorAll('.device-item').forEach(el => el.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+    }
+
+    function execJam(type) {
+        const log = document.getElementById('log');
+        const btn = document.getElementById(type === 'BT' ? 'btJamBtn' : 'wifiJamBtn');
+        
+        btn.disabled = true;
+        btn.innerText = "⚡ MENGIRIM SERANGAN...";
+        
+        let progress = 0;
         const interval = setInterval(() => {
-            logDiv.innerText = `Jamming Sequence #${count} - Target: ${selectedDevice.name}`;
-            count++;
-            if(count > 50) {
+            progress += 5;
+            log.innerText = `[${type}-ATTACK] Flooding packets to ${currentTarget}... ${progress}%`;
+            
+            if (progress >= 100) {
                 clearInterval(interval);
-                logDiv.innerText = "KONEKSI TARGET KACAU / TERPUTUS! 🥵💦";
-                jamBtn.innerText = "🔥 KACAUKAN LAGI";
-                jamBtn.disabled = false;
-                alert("Sinyal Bluetooth target berhasil dikacaukan!");
+                log.innerText = `[SUCCESS] ${currentTarget} DISCONNECTED! 🥵💦`;
+                btn.innerText = "🔥 ULANGI SERANGAN";
+                btn.disabled = false;
+                alert(`Jaringan ${type} pada ${currentTarget} berhasil dikacaukan dan terputus!`);
             }
-        }, 100);
+        }, 150);
     }
 </script>
 
 </body>
 </html>
-
