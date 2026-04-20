@@ -3,65 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Z01 - Terminal</title>
+    <title>Alpha Z01</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="rain"></div>
+    <div class="rain-container"></div>
+    <div class="glow-overlay"></div>
 
-    <div id="auth-container" class="glass-box">
-        <div id="login-form">
-            <h2>ALPHA Z01 LOGIN</h2>
+    <section id="login-page" class="auth-container">
+        <h1>ALPHA Z01</h1>
+        <div class="glass-card">
+            <h2>LOGIN</h2>
             <input type="text" id="login-user" placeholder="Username">
             <input type="password" id="login-pass" placeholder="Password">
             <button onclick="handleLogin()">Login</button>
-            <p>Tidak punya akun? <span class="link" onclick="toggleAuth()">Register</span></p>
+            <p>Tidak punya akun? <span class="link" onclick="showPage('register-page')">Register</span></p>
         </div>
-        <div id="register-form" style="display: none;">
-            <h2>CREATE ACCOUNT</h2>
+    </section>
+
+    <section id="register-page" class="auth-container" style="display:none;">
+        <h1>ALPHA Z01</h1>
+        <div class="glass-card">
+            <h2>REGISTER</h2>
             <input type="text" id="reg-user" placeholder="Username">
             <input type="email" id="reg-email" placeholder="Email">
             <input type="password" id="reg-pass" placeholder="Password">
             <button onclick="handleRegister()">Register</button>
-            <p>Sudah punya akun? <span class="link" onclick="toggleAuth()">Login</span></p>
+            <p>Sudah punya akun? <span class="link" onclick="showPage('login-page')">Login</span></p>
         </div>
-    </div>
+    </section>
 
-    <div id="main-page" style="display: none;">
-        <header class="main-header">
-            <h1 class="brand-title">ALPHA Z01</h1>
-            <div class="nav-controls">
-                <button id="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                
-                <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Search without limits...">
-                    <button onclick="executeSearch()"><i class="fas fa-search"></i></button>
-                </div>
+    <section id="main-page" style="display:none;">
+        <header>
+            <div class="nav-left">
+                <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+            </div>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search TikTok, YouTube, Web...">
+                <div class="search-btn" onclick="executeSearch()">🔍</div>
             </div>
         </header>
 
+        <main id="content-area">
+            <div class="welcome-msg">
+                <h3>Alpha Z01 Engine</h3>
+                <p>Silahkan cari sesuatu untuk memulai.</p>
+            </div>
+            <iframe id="search-frame" src="" frameborder="0" allowfullscreen></iframe>
+        </main>
+
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <h3>SETTINGS</h3>
-                <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+                <h3>Settings</h3>
+                <span class="close-btn" onclick="toggleSidebar()">X</span>
             </div>
             <div class="sidebar-content">
-                <div class="setting-item">
-                    <span>SafeSearch</span>
+                <div class="feature">
+                    <span>Safe Search</span>
                     <label class="switch">
-                        <input type="checkbox" id="safesearch-toggle" checked>
+                        <input type="checkbox" id="safesearch-toggle">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <p class="desc">Saat dinonaktifkan, parameter pencarian akan mencoba melewati filter standar.</p>
+                <div class="feature">
+                    <span>VPN Support</span>
+                    <span class="status">Active (Universal)</span>
+                </div>
+                <div class="feature">
+                    <span>I-Frame Bypass</span>
+                    <span class="status">Enabled</span>
+                </div>
             </div>
         </div>
-
-        <div class="content-area">
-            <iframe id="search-frame" src="" frameborder="0"></iframe>
-        </div>
-    </div>
+    </section>
 
     <script src="script.js"></script>
 </body>
