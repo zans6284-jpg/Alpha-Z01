@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Z01 - Terminal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="rain"></div>
+
+    <div id="auth-container" class="glass-box">
+        <div id="login-form">
+            <h2>ALPHA Z01 LOGIN</h2>
+            <input type="text" id="login-user" placeholder="Username">
+            <input type="password" id="login-pass" placeholder="Password">
+            <button onclick="handleLogin()">Login</button>
+            <p>Tidak punya akun? <span class="link" onclick="toggleAuth()">Register</span></p>
+        </div>
+
+        <div id="register-form" style="display: none;">
+            <h2>CREATE ACCOUNT</h2>
+            <input type="text" id="reg-user" placeholder="Username">
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-pass" placeholder="Password">
+            <button onclick="handleRegister()">Register</button>
+            <p>Sudah punya akun? <span class="link" onclick="toggleAuth()">Login</span></p>
+        </div>
+    </div>
+
+    <div id="main-page" style="display: none;">
+        <nav class="navbar">
+            <div class="brand">Alpha Z01</div>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search TikTok, YouTube, Web...">
+                <button onclick="executeSearch()"><i class="fas fa-search"></i></button>
+            </div>
+        </nav>
+
+        <div class="content-area">
+            <div id="results-frame-container">
+                <p id="welcome-msg">Welcome to the Grid. Search anything without filters.</p>
+                <iframe id="search-frame" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
