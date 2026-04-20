@@ -18,7 +18,6 @@
             <button onclick="handleLogin()">Login</button>
             <p>Tidak punya akun? <span class="link" onclick="toggleAuth()">Register</span></p>
         </div>
-
         <div id="register-form" style="display: none;">
             <h2>CREATE ACCOUNT</h2>
             <input type="text" id="reg-user" placeholder="Username">
@@ -30,19 +29,37 @@
     </div>
 
     <div id="main-page" style="display: none;">
-        <nav class="navbar">
-            <div class="brand">Alpha Z01</div>
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search TikTok, YouTube, Web...">
-                <button onclick="executeSearch()"><i class="fas fa-search"></i></button>
+        <header class="main-header">
+            <h1 class="brand-title">ALPHA Z01</h1>
+            <div class="nav-controls">
+                <button id="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search without limits...">
+                    <button onclick="executeSearch()"><i class="fas fa-search"></i></button>
+                </div>
             </div>
-        </nav>
+        </header>
+
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>SETTINGS</h3>
+                <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+            </div>
+            <div class="sidebar-content">
+                <div class="setting-item">
+                    <span>SafeSearch</span>
+                    <label class="switch">
+                        <input type="checkbox" id="safesearch-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <p class="desc">Saat dinonaktifkan, parameter pencarian akan mencoba melewati filter standar.</p>
+            </div>
+        </div>
 
         <div class="content-area">
-            <div id="results-frame-container">
-                <p id="welcome-msg">Welcome to the Grid. Search anything without filters.</p>
-                <iframe id="search-frame" src="" frameborder="0"></iframe>
-            </div>
+            <iframe id="search-frame" src="" frameborder="0"></iframe>
         </div>
     </div>
 
