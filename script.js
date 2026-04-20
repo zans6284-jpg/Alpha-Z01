@@ -14,15 +14,22 @@ function toggleAuth() {
 
 // Fungsi Register
 function handleRegister() {
-    const user = document.getElementById('reg-user').value;
-    const email = document.getElementById('reg-email').value;
-    const pass = document.getElementById('reg-pass').value;
+    // .trim() digunakan untuk menghapus spasi di awal/akhir yang sering bikin error
+    const user = document.getElementById('reg-user').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass = document.getElementById('reg-pass').value.trim();
 
     if (user && email && pass) {
-        const userData = { username: user, email: email, password: pass };
-        // Simpan ke localStorage (menggantikan file backend)
-        localStorage.setItem('alpha_user_' + user, JSON.stringify(userData));
-        alert("Registrasi Berhasil! Silakan Login.");
+        const userData = { 
+            username: user, 
+            email: email, 
+            password: pass 
+        };
+        
+        // Simpan dengan key yang konsisten
+        localStorage.setItem('alpha_user_' + user.toLowerCase(), JSON.stringify(userData));
+        
+        alert("Registrasi Berhasil untuk: " + user + "! Silakan Login.");
         toggleAuth();
     } else {
         alert("Mohon isi semua kolom!");
@@ -31,21 +38,25 @@ function handleRegister() {
 
 // Fungsi Login
 function handleLogin() {
-    const user = document.getElementById('login-user').value;
-    const pass = document.getElementById('login-pass').value;
+    const userInput = document.getElementById('login-user').value.trim();
+    const passInput = document.getElementById('login-pass').value.trim();
 
-    const storedData = localStorage.getItem('alpha_user_' + user);
+    // Ambil data dengan mengubah input ke lowercase agar tidak sensitif huruf besar/kecil di username
+    const storedData = localStorage.getItem('alpha_user_' + userInput.toLowerCase());
 
     if (storedData) {
         const parsedData = JSON.parse(storedData);
-        if (parsedData.password === pass) {
+        
+        // Cek apakah password cocok
+        if (parsedData.password === passInput) {
+            alert("Akses Diterima. Masuk ke Alpha Z01...");
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('main-page').style.display = 'block';
         } else {
             alert("Password salah!");
         }
     } else {
-        alert("Username tidak ditemukan!");
+        alert("Username '" + userInput + "' tidak ditemukan!");
     }
 }
 
@@ -59,10 +70,7 @@ function executeSearch() {
         msg.style.display = 'none';
         frame.style.display = 'block';
         
-        // Menggunakan Google Search via Iframe
-        // Catatan: Banyak situs (Google/YT) memblokir iframe (X-Frame-Options).
-        // Solusi: Kita arahkan ke link pencarian di tab baru atau proxy jika perlu.
-        // Di sini kita coba tampilkan link langsung:
+        // Menggunakan mode IGU agar Google mengizinkan iframe (beberapa browser mungkin memblokir)
         const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1`;
         frame.src = searchUrl;
     }
